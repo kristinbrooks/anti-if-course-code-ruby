@@ -9,6 +9,10 @@ class GildedRoseTest < Minitest::Test
     assert_equal items[0].name, "foo"
   end
 
+  def test_backstage_pass
+    assert_backstage_pass_quality(22, 8, 20)
+  end
+
   def test_report
     report_lines = []
     items = [
@@ -41,5 +45,11 @@ class GildedRoseTest < Minitest::Test
       ["-------- day 0 --------", "name, sellIn, quality", "+5 Dexterity Vest, 10, 20", "Aged Brie, 2, 0", "Elixir of the Mongoose, 5, 7", "Sulfuras, Hand of Ragnaros, 0, 80", "Sulfuras, Hand of Ragnaros, -1, 80", "Backstage passes to a TAFKAL80ETC concert, 15, 20", "Backstage passes to a TAFKAL80ETC concert, 10, 49", "Backstage passes to a TAFKAL80ETC concert, 5, 49", "Conjured Mana Cake, 3, 6", "", "-------- day 1 --------", "name, sellIn, quality", "+5 Dexterity Vest, 9, 19", "Aged Brie, 1, 1", "Elixir of the Mongoose, 4, 6", "Sulfuras, Hand of Ragnaros, 0, 80", "Sulfuras, Hand of Ragnaros, -1, 80", "Backstage passes to a TAFKAL80ETC concert, 14, 21", "Backstage passes to a TAFKAL80ETC concert, 9, 50", "Backstage passes to a TAFKAL80ETC concert, 4, 50", "Conjured Mana Cake, 2, 5", ""],
       report_lines
     )
+  end
+  
+  def assert_backstage_pass_quality(expected, sell_in, quality)
+    items = [Item.new("Backstage passes to a TAFKAL80ETC concert", sell_in, quality)]
+    GildedRose.new(items).update_quality
+    assert_equal(expected, items[0].quality)
   end
 end
