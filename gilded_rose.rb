@@ -8,35 +8,11 @@ class GildedRose
     @items.each do |item|
       if sulfuras?(item)
       elsif generic?(item)
-        if item.quality > 0
-          decrease_quality(item)
-        end
-        item.sell_in = item.sell_in - 1
+        handle_generic(item)
       elsif aged_brie?(item)
-        if quality_less_than_50(item)
-          increase_quality(item)
-        end
-        item.sell_in = item.sell_in - 1
+        handle_aged_brie(item)
       elsif backstage_pass?(item)
         handle_backstage_pass(item)
-      end
-      if aged_brie?(item)
-        if item.sell_in < 0
-          if quality_less_than_50(item)
-            increase_quality(item)
-          end
-        end
-      elsif backstage_pass?(item)
-        if item.sell_in < 0
-          item.quality = item.quality - item.quality
-        end
-      elsif sulfuras?(item)
-      elsif generic?(item)
-        if item.sell_in < 0
-          if item.quality > 0
-            decrease_quality(item)
-          end
-        end
       end
     end
   end
@@ -58,6 +34,33 @@ class GildedRose
       end
     end
     item.sell_in = item.sell_in - 1
+    if item.sell_in < 0
+      item.quality = item.quality - item.quality
+    end
+  end
+
+  def handle_aged_brie(item)
+    if quality_less_than_50(item)
+      increase_quality(item)
+    end
+    item.sell_in = item.sell_in - 1
+    if item.sell_in < 0
+      if quality_less_than_50(item)
+        increase_quality(item)
+      end
+    end
+  end
+
+  def handle_generic(item)
+    if item.quality > 0
+      decrease_quality(item)
+    end
+    item.sell_in = item.sell_in - 1
+    if item.sell_in < 0
+      if item.quality > 0
+        decrease_quality(item)
+      end
+    end
   end
 
   def generic?(item)
