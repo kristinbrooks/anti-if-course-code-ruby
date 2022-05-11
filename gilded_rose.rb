@@ -68,6 +68,18 @@ class GildedRose
     end
   end
 
+  class Sulfuras
+    attr_reader :quality, :sell_in
+
+    def initialize(quality, sell_in)
+      @quality, @sell_in = quality, sell_in
+    end
+
+    def update
+      
+    end
+  end
+
   def initialize(items)
     @items = items
   end
@@ -75,6 +87,10 @@ class GildedRose
   def update_quality
     @items.each do |item|
       if sulfuras?(item)
+        sulfuras = Sulfuras.new(item.quality, item.sell_in)
+        sulfuras.update
+        item.quality = sulfuras.quality
+        item.sell_in = sulfuras.sell_in
       elsif generic?(item)
         generic = Generic.new(item.quality, item.sell_in)
         generic.update
