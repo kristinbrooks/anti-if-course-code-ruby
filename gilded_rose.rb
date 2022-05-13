@@ -1,42 +1,54 @@
-class GildedRose
+module Inventory
+
+  class Quality
+    attr_reader :amount
+
+    def initialize(amount)
+      @amount = amount
+    end
+
+    def degrade
+      @amount -= 1 if @amount > 0
+    end
+
+    def increase
+      @amount += 1 if @amount < 50
+    end
+  end
 
   class Generic
-    attr_reader :quality, :sell_in
+    attr_reader :sell_in
 
     def initialize(quality, sell_in)
-      @quality, @sell_in = quality, sell_in
+      @quality, @sell_in = Quality.new(quality), sell_in
+    end
+
+    def quality
+      @quality.amount
     end
 
     def update
-      if @quality > 0
-        @quality = @quality - 1
-      end
+      @quality.degrade
       @sell_in = @sell_in - 1
-      if @sell_in < 0
-        if @quality > 0
-          @quality = @quality - 1
-        end
-      end
+      @quality.degrade if @sell_in < 0
     end
   end
 
   class AgedBrie
-    attr_reader :quality, :sell_in
+    attr_reader :sell_in
 
     def initialize(quality, sell_in)
-      @quality, @sell_in = quality, sell_in
+      @quality, @sell_in = Quality.new(quality), sell_in
+    end
+
+    def quality
+      @quality.amount
     end
 
     def update
-      if @quality < 50
-        @quality = @quality + 1
-      end
+      @quality.increase
       @sell_in = @sell_in - 1
-      if @sell_in < 0
-        if @quality < 50
-          @quality = @quality + 1
-        end
-      end
+      @quality.increase if @sell_in < 0
     end
   end
 
@@ -80,16 +92,20 @@ class GildedRose
     end
   end
 
+end
+
+class GildedRose
+
   class GoodsCategory
     def build_for(item)
       if sulfuras?(item)
-        Sulfuras.new(item.quality, item.sell_in)
+        Inventory::Sulfuras.new(item.quality, item.sell_in)
       elsif generic?(item)
-        Generic.new(item.quality, item.sell_in)
+        Inventory::Generic.new(item.quality, item.sell_in)
       elsif aged_brie?(item)
-        AgedBrie.new(item.quality, item.sell_in)
+        Inventory::AgedBrie.new(item.quality, item.sell_in)
       elsif backstage_pass?(item)
-        BackstagePass.new(item.quality, item.sell_in)
+        Inventory::BackstagePass.new(item.quality, item.sell_in)
       end
     end
 
