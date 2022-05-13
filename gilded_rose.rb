@@ -14,6 +14,14 @@ module Inventory
     def increase
       @amount += 1 if @amount < 50
     end
+
+    def reset
+      @amount = 0
+    end
+
+    def less_than_50
+      @amount < 50
+    end
   end
 
   class Generic
@@ -53,29 +61,29 @@ module Inventory
   end
 
   class BackstagePass
-    attr_reader :quality, :sell_in
+    attr_reader :sell_in
 
     def initialize(quality, sell_in)
-      @quality, @sell_in = quality, sell_in
+      @quality, @sell_in = Quality.new(quality), sell_in
+    end
+
+    def quality
+      @quality.amount
     end
 
     def update
-      if @quality < 50
-        @quality = @quality + 1
+      @quality.increase
+      if @quality.less_than_50
         if @sell_in < 11
-          if @quality < 50
-            @quality = @quality + 1
-          end
+          @quality.increase
         end
         if @sell_in < 6
-          if @quality < 50
-            @quality = @quality + 1
-          end
+          @quality.increase
         end
       end
       @sell_in = @sell_in - 1
       if @sell_in < 0
-        @quality = @quality - @quality
+        @quality.reset
       end
     end
   end
