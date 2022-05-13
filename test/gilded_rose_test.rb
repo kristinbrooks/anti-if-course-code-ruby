@@ -1,7 +1,11 @@
 require File.join(File.dirname(__FILE__), '../gilded_rose')
 require 'minitest/autorun'
 
+require 'mutant/minitest/coverage'
+
 class GildedRoseTest < Minitest::Test
+
+  cover "Inventory"
 
   def test_foo
     items = [Item.new("foo", 0, 0)]
