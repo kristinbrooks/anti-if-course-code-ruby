@@ -24,9 +24,25 @@ class GildedRose
 
     class Generic
 
-      def update(quality, sell_in)
+      def self.build(sell_in)
+        if sell_in < 0
+          Expired.new
+        else
+          self.new
+        end
+      end
+
+      class Expired
+
+        def update(quality, _)
+          quality.degrade
+          quality.degrade
+        end
+
+      end
+
+      def update(quality, _)
         quality.degrade
-        quality.degrade if sell_in < 0
       end
     end
 
@@ -78,7 +94,7 @@ class GildedRose
       when "Aged Brie"
         Inventory::AgedBrie.build(item.sell_in)
       else
-        Inventory::Generic.new
+        Inventory::Generic.build(item.sell_in)
       end
     end
   end
