@@ -5,7 +5,7 @@ require 'mutant/minitest/coverage'
 
 class GildedRoseTest < Minitest::Test
 
-  cover "Inventory"
+  cover "GildedRose"
 
   def test_foo
     items = [Item.new("foo", 0, 0)]
