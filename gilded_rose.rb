@@ -23,17 +23,15 @@ class GildedRose
     end
 
     class Generic
-
       def self.build(sell_in)
         if sell_in < 0
           Expired.new
         else
-          self.new
+          new
         end
       end
 
       class Expired
-
         def update(quality, _)
           quality.degrade
           quality.degrade
@@ -47,17 +45,15 @@ class GildedRose
     end
 
     class AgedBrie
-
       def self.build(sell_in)
         if sell_in < 0
           Expired.new
         else
-          self.new
+          new
         end
       end
 
       class Expired
-
         def update(quality, _)
           quality.increase
           quality.increase
@@ -70,6 +66,19 @@ class GildedRose
     end
 
     class BackstagePass
+      def self.build(sell_in)
+        if sell_in < 0
+          Expired.new
+        else
+          new
+        end
+      end
+
+      class Expired
+        def update(quality, _)
+          quality.reset
+        end
+      end
 
       def update(quality, sell_in)
         quality.increase
@@ -79,9 +88,6 @@ class GildedRose
         if sell_in < 5
           quality.increase
         end
-        if sell_in < 0
-          quality.reset
-        end
       end
     end
   end
@@ -90,7 +96,7 @@ class GildedRose
     def build_for(item)
       case item.name
       when "Backstage passes to a TAFKAL80ETC concert"
-        Inventory::BackstagePass.new
+        Inventory::BackstagePass.build(item.sell_in)
       when "Aged Brie"
         Inventory::AgedBrie.build(item.sell_in)
       else
