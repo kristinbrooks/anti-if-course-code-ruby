@@ -25,11 +25,7 @@ class GildedRose
     class Generic
 
       def initialize(quality)
-        @quality = Quality.new(quality)
-      end
-
-      def quality
-        @quality.amount
+        @quality = quality
       end
 
       def update(sell_in)
@@ -50,11 +46,7 @@ class GildedRose
 
       class Expired
         def initialize(quality)
-          @quality = Quality.new(quality)
-        end
-
-        def quality
-          @quality.amount
+          @quality = quality
         end
 
         def update(_)
@@ -64,11 +56,7 @@ class GildedRose
       end
 
       def initialize(quality)
-        @quality = Quality.new(quality)
-      end
-
-      def quality
-        @quality.amount
+        @quality = quality
       end
 
       def update(_)
@@ -79,11 +67,7 @@ class GildedRose
     class BackstagePass
 
       def initialize(quality)
-        @quality = Quality.new(quality)
-      end
-
-      def quality
-        @quality.amount
+        @quality = quality
       end
 
       def update(sell_in)
@@ -102,14 +86,14 @@ class GildedRose
   end
 
   class GoodsCategory
-    def build_for(item)
+    def build_for(item, quality)
       case item.name
       when "Backstage passes to a TAFKAL80ETC concert"
-        Inventory::BackstagePass.new(item.quality)
+        Inventory::BackstagePass.new(quality)
       when "Aged Brie"
-        Inventory::AgedBrie.build(item.quality, item.sell_in)
+        Inventory::AgedBrie.build(quality, item.sell_in)
       else
-        Inventory::Generic.new(item.quality)
+        Inventory::Generic.new(quality)
       end
     end
   end
@@ -122,9 +106,10 @@ class GildedRose
     @items.each do |item|
       next if sulfuras?(item)
       item.sell_in -= 1
-      goods = GoodsCategory.new.build_for(item)
+      quality = Inventory::Quality.new(item.quality)
+      goods = GoodsCategory.new.build_for(item, quality)
       goods.update(item.sell_in)
-      item.quality = goods.quality
+      item.quality = quality.amount
     end
   end
 
