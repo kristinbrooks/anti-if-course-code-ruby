@@ -32,6 +32,7 @@ class GildedRoseTest < Minitest::Test
 
   def test_aged_brie
     assert_aged_brie_quality(22, 0, 20)
+    assert_aged_brie_quality(21, 1, 20)
   end
 
   def test_report
