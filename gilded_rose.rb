@@ -23,61 +23,55 @@ class GildedRose
     end
 
     class Generic
-      attr_reader :sell_in
 
-      def initialize(quality, sell_in)
-        @quality, @sell_in = Quality.new(quality), sell_in
+      def initialize(quality)
+        @quality = Quality.new(quality)
       end
 
       def quality
         @quality.amount
       end
 
-      def update
+      def update(sell_in)
         @quality.degrade
-        @sell_in = sell_in - 1
         @quality.degrade if sell_in < 0
       end
     end
 
     class AgedBrie
-      attr_reader :sell_in
 
-      def initialize(quality, sell_in)
-        @quality, @sell_in = Quality.new(quality), sell_in
+      def initialize(quality)
+        @quality = Quality.new(quality)
       end
 
       def quality
         @quality.amount
       end
 
-      def update
+      def update(sell_in)
         @quality.increase
-        @sell_in = sell_in - 1
         @quality.increase if sell_in < 0
       end
     end
 
     class BackstagePass
-      attr_reader :sell_in
 
-      def initialize(quality, sell_in)
-        @quality, @sell_in = Quality.new(quality), sell_in
+      def initialize(quality)
+        @quality = Quality.new(quality)
       end
 
       def quality
         @quality.amount
       end
 
-      def update
+      def update(sell_in)
         @quality.increase
-        if sell_in < 11
+        if sell_in < 10
           @quality.increase
         end
-        if sell_in < 6
+        if sell_in < 5
           @quality.increase
         end
-        @sell_in = sell_in - 1
         if sell_in < 0
           @quality.reset
         end
@@ -89,11 +83,11 @@ class GildedRose
     def build_for(item)
       case item.name
       when "Backstage passes to a TAFKAL80ETC concert"
-        Inventory::BackstagePass.new(item.quality, item.sell_in)
+        Inventory::BackstagePass.new(item.quality)
       when "Aged Brie"
-        Inventory::AgedBrie.new(item.quality, item.sell_in)
+        Inventory::AgedBrie.new(item.quality)
       else
-        Inventory::Generic.new(item.quality, item.sell_in)
+        Inventory::Generic.new(item.quality)
       end
     end
   end
@@ -105,11 +99,10 @@ class GildedRose
   def update_quality
     @items.each do |item|
       next if sulfuras?(item)
-      # item.sell_in -= 1
+      item.sell_in -= 1
       goods = GoodsCategory.new.build_for(item)
-      goods.update
+      goods.update(item.sell_in)
       item.quality = goods.quality
-      item.sell_in = goods.sell_in
     end
   end
 
