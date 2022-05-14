@@ -40,6 +40,29 @@ class GildedRose
 
     class AgedBrie
 
+      def self.build(quality, sell_in)
+        if sell_in < 0
+          Expired.new(quality)
+        else
+          self.new(quality)
+        end
+      end
+
+      class Expired
+        def initialize(quality)
+          @quality = Quality.new(quality)
+        end
+
+        def quality
+          @quality.amount
+        end
+
+        def update(_)
+          @quality.increase
+          @quality.increase
+        end
+      end
+
       def initialize(quality)
         @quality = Quality.new(quality)
       end
@@ -48,9 +71,8 @@ class GildedRose
         @quality.amount
       end
 
-      def update(sell_in)
+      def update(_)
         @quality.increase
-        @quality.increase if sell_in < 0
       end
     end
 
@@ -85,7 +107,7 @@ class GildedRose
       when "Backstage passes to a TAFKAL80ETC concert"
         Inventory::BackstagePass.new(item.quality)
       when "Aged Brie"
-        Inventory::AgedBrie.new(item.quality)
+        Inventory::AgedBrie.build(item.quality, item.sell_in)
       else
         Inventory::Generic.new(item.quality)
       end
