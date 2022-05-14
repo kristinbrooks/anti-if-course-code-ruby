@@ -5,4 +5,5 @@ gem 'minitest'
 gem 'simplecov'
 
 gem 'mutant-minitest'
+gem 'mutant-license'
 gem 'parser', '3.1.0'

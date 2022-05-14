@@ -19,7 +19,7 @@ module Inventory
       @amount = 0
     end
 
-    def less_than_50
+    def less_than_50?
       @amount < 50
     end
   end
@@ -37,6 +37,7 @@ module Inventory
 
     def update
       @quality.degrade
+      @sell_in = @sell_in - 1
       @quality.degrade if @sell_in < 0
     end
   end
@@ -72,7 +73,7 @@ module Inventory
 
     def update
       @quality.increase
-      if @quality.less_than_50
+      if @quality.less_than_50?
         if @sell_in < 11
           @quality.increase
         end
@@ -123,10 +124,11 @@ class GildedRose
   def update_quality
     @items.each do |item|
       next if sulfuras?(item)
-      item.sell_in -= 1
+      # item.sell_in -= 1
       goods = GoodsCategory.new.build_for(item)
       goods.update
       item.quality = goods.quality
+      item.sell_in = goods.sell_in
     end
   end
 
