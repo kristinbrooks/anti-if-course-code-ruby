@@ -28,6 +28,8 @@ class GildedRoseTest < Minitest::Test
     assert_generic_quality(1, -1, 3)
     assert_generic_quality(1, 0, 3)
     assert_generic_quality(2, 1, 3)
+    assert_generic_quality(0, 1, 0)
+    assert_generic_quality(0, 1, 1)
   end
 
   def test_aged_brie
