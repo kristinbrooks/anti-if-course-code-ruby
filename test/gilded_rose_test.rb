@@ -32,6 +32,15 @@ class GildedRoseTest < Minitest::Test
     assert_generic_quality(0, 1, 1)
   end
 
+  def test_conjured
+    assert_conjured_quality(0, -1, 3)
+    assert_conjured_quality(0, 0, 3)
+    assert_conjured_quality(1, 1, 3)
+    assert_conjured_quality(0, 1, 0)
+    assert_conjured_quality(0, 1, 1)
+    assert_conjured_quality(0, 0, 4)
+  end
+
   def test_aged_brie
     assert_aged_brie_quality(22, 0, 20)
     assert_aged_brie_quality(21, 1, 20)
@@ -48,7 +57,6 @@ class GildedRoseTest < Minitest::Test
       Item.new(name="Backstage passes to a TAFKAL80ETC concert", sell_in=15, quality=20),
       Item.new(name="Backstage passes to a TAFKAL80ETC concert", sell_in=10, quality=49),
       Item.new(name="Backstage passes to a TAFKAL80ETC concert", sell_in=5, quality=49),
-      # This Conjured item does not work properly yet
       Item.new(name="Conjured Mana Cake", sell_in=3, quality=6), # <-- :O
     ]
 
@@ -66,7 +74,7 @@ class GildedRoseTest < Minitest::Test
     end
 
     assert_equal(
-      ["-------- day 0 --------", "name, sellIn, quality", "+5 Dexterity Vest, 10, 20", "Aged Brie, 2, 0", "Elixir of the Mongoose, 5, 7", "Sulfuras, Hand of Ragnaros, 0, 80", "Sulfuras, Hand of Ragnaros, -1, 80", "Backstage passes to a TAFKAL80ETC concert, 15, 20", "Backstage passes to a TAFKAL80ETC concert, 10, 49", "Backstage passes to a TAFKAL80ETC concert, 5, 49", "Conjured Mana Cake, 3, 6", "", "-------- day 1 --------", "name, sellIn, quality", "+5 Dexterity Vest, 9, 19", "Aged Brie, 1, 1", "Elixir of the Mongoose, 4, 6", "Sulfuras, Hand of Ragnaros, 0, 80", "Sulfuras, Hand of Ragnaros, -1, 80", "Backstage passes to a TAFKAL80ETC concert, 14, 21", "Backstage passes to a TAFKAL80ETC concert, 9, 50", "Backstage passes to a TAFKAL80ETC concert, 4, 50", "Conjured Mana Cake, 2, 5", ""],
+      ["-------- day 0 --------", "name, sellIn, quality", "+5 Dexterity Vest, 10, 20", "Aged Brie, 2, 0", "Elixir of the Mongoose, 5, 7", "Sulfuras, Hand of Ragnaros, 0, 80", "Sulfuras, Hand of Ragnaros, -1, 80", "Backstage passes to a TAFKAL80ETC concert, 15, 20", "Backstage passes to a TAFKAL80ETC concert, 10, 49", "Backstage passes to a TAFKAL80ETC concert, 5, 49", "Conjured Mana Cake, 3, 6", "", "-------- day 1 --------", "name, sellIn, quality", "+5 Dexterity Vest, 9, 19", "Aged Brie, 1, 1", "Elixir of the Mongoose, 4, 6", "Sulfuras, Hand of Ragnaros, 0, 80", "Sulfuras, Hand of Ragnaros, -1, 80", "Backstage passes to a TAFKAL80ETC concert, 14, 21", "Backstage passes to a TAFKAL80ETC concert, 9, 50", "Backstage passes to a TAFKAL80ETC concert, 4, 50", "Conjured Mana Cake, 2, 4", ""],
       report_lines
     )
   end
@@ -79,6 +87,12 @@ class GildedRoseTest < Minitest::Test
   
   def assert_aged_brie_quality(expected, sell_in, quality)
     items = [Item.new("Aged Brie", sell_in, quality)]
+    GildedRose.new(items).update_quality
+    assert_equal(expected, items[0].quality)
+  end
+
+  def assert_conjured_quality(expected, sell_in, quality)
+    items = [Item.new("Conjured Mana Cake", sell_in, quality)]
     GildedRose.new(items).update_quality
     assert_equal(expected, items[0].quality)
   end

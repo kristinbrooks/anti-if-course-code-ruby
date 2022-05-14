@@ -44,6 +44,31 @@ class GildedRose
       end
     end
 
+    class Conjured
+      def self.build(sell_in)
+        if sell_in < 0
+          Expired.new
+        else
+          new
+        end
+      end
+
+      class Expired
+        def update(quality)
+          quality.degrade
+          quality.degrade
+          quality.degrade
+          quality.degrade
+        end
+
+      end
+
+      def update(quality)
+        quality.degrade
+        quality.degrade
+      end
+    end
+
     class AgedBrie
       def self.build(sell_in)
         if sell_in < 0
@@ -113,6 +138,8 @@ class GildedRose
         Inventory::BackstagePass.build(item.sell_in)
       when "Aged Brie"
         Inventory::AgedBrie.build(item.sell_in)
+      when "Conjured Mana Cake"
+        Inventory::Conjured.build(item.sell_in)
       else
         Inventory::Generic.build(item.sell_in)
       end
